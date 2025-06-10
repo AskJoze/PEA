@@ -9,10 +9,10 @@ El sistema permite a los usuarios explorar una tienda de productos, buscar, filt
 ## Tecnologías Utilizadas
 
 - **Backend:** [Laravel 11](https://laravel.com/) (PHP 8.2)
-- **Frontend:** HTML5, CSS3, [Tailwind CSS](https://tailwindcss.com/), JavaScript
+- **Frontend:** HTML5, [Tailwind CSS](https://tailwindcss.com/), JavaScript
 - **Base de datos:** MySQL 
 - **Almacenamiento de imágenes:** [Firebase Storage](https://firebase.google.com/)
-- **Herramientas de desarrollo:** Composer, XAMPP, NPM
+- **Herramientas de desarrollo:** Composer, XAMPP 
 
 ## Estructura del Proyecto
 
