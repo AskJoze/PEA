@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Subir Imagen a Firebase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-8">
+
+  <h1 class="text-3xl font-bold mb-6">Subir Imagen a Firebase</h1>
+
+  <div class="bg-gray-800 p-6 rounded-xl shadow-md w-full max-w-md">
+    <input type="file" id="file-input" accept="image/*" class="w-full mb-4" />
+    
+    <button onclick="subirImagen()" class="w-full bg-green-600 hover:bg-green-700 py-2 rounded text-white font-semibold">
+      Subir Imagen
+    </button>
+
+    <p id="estado" class="mt-4 text-center text-sm text-yellow-300"></p>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+ const firebaseConfig = {
+  apiKey: "AIzaSyBdkVDUIPpK2EEAqs7AoEnRJPV8vcxcNXQ",
+  authDomain: "peapres-77a1b.firebaseapp.com",
+  projectId: "peapres-77a1b",
+  storageBucket: "peapres-77a1b.firebasestorage.app",
+  messagingSenderId: "122835773477",
+  appId: "1:122835773477:web:ce17c58488d74e0f5ab7cc",
+  measurementId: "G-VQBGVLCMZL"
+};
+
+
+    firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage();
+    const db = firebase.firestore();
+
+    function subirImagen() {
+      const file = document.getElementById('file-input').files[0];
+      const estado = document.getElementById('estado');
+
+      if (!file) {
+        estado.textContent = "Por favor, selecciona una imagen.";
+        return;
+      }
+
+      estado.textContent = "Iniciando subida...";
+
+      const storageRef = storage.ref('imagenes/' + Date.now() + '-' + file.name);
+      const uploadTask = storageRef.put(file);
+
+      uploadTask.on('state_changed',
+        snapshot => {
+          const progreso = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          estado.textContent = `Subiendo: ${progreso.toFixed(0)}%`;
+        },
+        error => {
+          console.error('Error al subir:', error);
+          estado.textContent = "Error al subir la imagen.";
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(url => {
+            db.collection('imagenes').add({
+              url: url,
+              fecha: new Date()
+            }).then(() => {
+              estado.textContent = "¡Imagen subida correctamente!";
+              document.getElementById('file-input').value = '';
+            }).catch((error) => {
+              estado.textContent = "Error guardando datos en Firestore.";
+              console.error(error);
+            });
+          });
+        }
+      );
+    }
+  </script>
+</body>
+</html>
