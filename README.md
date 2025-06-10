@@ -25,5 +25,5 @@ El sistema permite a los usuarios explorar una tienda de productos, buscar, filt
 
 1. **Clonar el repositorio**
    ```sh
-   git clone https://github.com/AskJoze/PeaWeb.git
+   git clone https://github.com/AskJoze/PEA.git
    cd catalogo-laravel
