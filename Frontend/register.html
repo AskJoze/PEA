@@ -1,0 +1,63 @@
+.<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+  <div class="w-full max-w-sm mx-auto p-8 bg-gray-800 rounded-xl">
+    <h2 class="text-3xl font-bold mb-6 text-center text-white">Registra tu cuenta</h2>
+    <form id="registerForm" class="space-y-4">
+      <input type="text" id="reg_nombre" placeholder="Nombre Completo" required
+        class="w-full border border-purple-800 bg-gray-800 text-white rounded-lg px-3 py-2 placeholder-purple-400" />
+      <input type="email" id="reg_email" placeholder="Email" required
+        class="w-full border border-purple-800 bg-gray-800 text-white rounded-lg px-3 py-2 placeholder-purple-400" />
+      <input type="password" id="reg_password" placeholder="Contraseña (Minimo 8 Digitos)" required
+        class="w-full border border-purple-800 bg-gray-800 text-white rounded-lg px-3 py-2 placeholder-purple-400" />
+      <button type="submit"
+        class="w-full bg-purple-800 hover:bg-purple-900 text-white py-2 rounded-lg transition">
+        Registrar
+      </button>
+      <div class="text-purple-300 mt-2 text-center" id="registerMsg"></div>
+    </form>
+
+    <p class="mt-6 text-center text-purple-300">¿Ya tienes cuenta?
+      <a href="login.html" class="underline text-purple-400 hover:text-purple-200">Inicia sesión</a>
+    </p>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const nombre = document.getElementById('reg_nombre').value;
+      const email = document.getElementById('reg_email').value;
+      const password = document.getElementById('reg_password').value;
+      const registerMsg = document.getElementById('registerMsg');
+      registerMsg.textContent = '';
+
+      try {
+        const res = await fetch('http://127.0.0.1:8000/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: nombre,
+            email: email,
+            password: password,
+            password_confirmation: password
+          })
+        });
+        const data = await res.json();
+        if (data.id) {
+          registerMsg.textContent = 'Registro exitoso. Puedes iniciar sesión.';
+          document.getElementById('registerForm').reset();
+        } else {
+          registerMsg.textContent = data.error || 'Error en el registro. Inténtalo de nuevo.';
+        }
+      } catch (err) {
+        registerMsg.textContent = 'Error al conectar con el servidor.';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Tienda Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen">
+    <header class="flex justify-between items-center m-8 bg-gray-800 rounded-b-2xl border-b-2 border-purple-800 shadow-lg p-6">
+        <h1 class="text-5xl font-bold text-white">Tienda Online</h1>
+        <nav id="menu" class="hidden md:flex md:items-center md:space-x-4">
+            <ul class="flex space-x-4">
+                <li><a href="index.html" class="text-white hover:text-purple-400 transition">Inicio</a></li>
+                <li><a href="contacto.html" class="text-purple-300 font-bold underline">Contacto</a></li>
+                <li id="admin-link" style="display:none;"><a href="crud.html" class="text-white hover:text-purple-400 transition">Administrar productos</a></li>
+                <li id="carrito-link" style="display:none;"><a href="carrito.html" class="text-white hover:text-purple-400 transition">Ver Carrito</a></li>
+            </ul>
+            <button onclick="logout()" class="ml-6 px-4 py-2 bg-black text-white rounded hover:bg-gray-700 transition">
+                Cerrar sesión
+            </button>
+        </nav>
+    </header>
+
+    <main class="flex flex-col items-center justify-center py-8 mb-9">
+        <section class="mb-8 bg-gray-800 border border-purple-800 rounded-xl p-8 w-full max-w-2xl shadow-lg">
+            <h2 class="text-4xl font-bold mb-4 text-purple-200">Contáctanos</h2>
+            <p class="text-xl mb-4">Tienda Jose Chasi</p>
+            <div class="mb-2">
+                <p class="font-semibold text-purple-300">Dirección:</p>
+                <p>Sangolquí, Ines Gangotena y Atahulpa</p>
+            </div>
+            <div class="mb-2">
+                <p class="font-semibold text-purple-300">Email:</p>
+                <p>josechasistore@gmail.com</p>
+            </div>
+            <div class="mb-2">
+                <p class="font-semibold text-purple-300">Teléfono:</p>
+                <p>0984995680</p>
+            </div>
+        </section>
+        <section id="map" class="rounded-lg w-full max-w-2xl border border-purple-800 shadow-lg"></section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-4 mt-8 px-6 rounded-t-2xl border-t-2 border-purple-800 text-center shadow-inner">
+        &copy; Tienda Jose Chasi
+    </footer>
+
+    <script>
+        function logout() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                fetch('http://127.0.0.1:8000/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .finally(() => {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('rol');
+                    window.location.href = 'login.html';
+                });
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const rol = localStorage.getItem('rol');
+            if (rol === 'admin') {
+                document.getElementById('admin-link').style.display = '';
+            }
+            if (rol === 'cliente') {
+                document.getElementById('carrito-link').style.display = '';
+            }
+        });
+    </script>
+
+    <script>
+        function initMap() {
+            const ubicacion = { lat: -0.334098, lng: -78.444463 };  
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center: ubicacionTienda,
+                zoom: 16
+            });
+            const marker = new google.maps.Marker({
+                position: ubicacionTienda,
+                map: map,
+                title: 'Tienda Jose Chasi'
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=" async defer></script>
+</body>
+</html>
